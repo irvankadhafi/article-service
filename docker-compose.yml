@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  nodeserver:
+    volumes:
+      - ./article-app:/usr/src/article-app
+    ports:
+      - '5000:5000'
+    build:
+      context: ./article-app
