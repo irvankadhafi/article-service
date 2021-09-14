@@ -1,11 +1,9 @@
 import express from 'express';
+import compression from 'compression';
+import api from './api';
 
 const app = express();
-app.get('/', (req, res) => {
-  res.json({
-    name: 'Hello World! My name Irvan Kadhafi',
-    message: 'Kumparan - Backend Technical Assessment',
-  });
-});
-
+app.use(compression()).use(express.urlencoded({ extended: true }))
+  .use(express.json())
+  .use(api);
 export default app;
