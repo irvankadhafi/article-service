@@ -1,16 +1,71 @@
 version: "3.8"
 services:
-  nodeserver:
+  articleservice:
+    restart: "always"
+    build: ./services/article-service
     volumes:
-      - ./article-app:/usr/src/article-app
+      - ./services/article-service:/usr/src/article-service
     ports:
-      - '5000:5000'
-    build:
-      context: ./article-app
-  redis:
-    image: redis:6
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - '6379:6379'
+      - '3001:3001'
+    depends_on:
+      - db
+    env_file: ./.env
+    environment:
+      - SERVER_PORT=3001
+      - DB_HOST=db
+      - DB_USER=$MYSQLDB_USER
+      - DB_PASSWORD=$MYSQLDB_PASSWORD
+      - DB_NAME=$MYSQLDB_DATABASE
+      - DB_PORT=$MYSQLDB_DOCKER_PORT
+
+  articlesearchservice:
+    restart: "always"
+    build: ./services/article-search-service
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./services/article-search-service:/usr/src/article-search-service
+    ports:
+      - '3002:3002'
+    depends_on:
+      - es1
+    links:
+      - es1
+      - articleservice
+    environment:
+      - SERVER_PORT=3002
+      - ELASTIC_URL=http://es1:9200
+
+  db:
+    image: mysql:8.0
+    restart: "always"
+    env_file: ./.env
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
+      MYSQL_USER: $MYSQLDB_USER
+      MYSQL_PASSWORD: $MYSQLDB_PASSWORD
+    ports:
+      - '3307:3306'
+    volumes:
+      - ./volumes/db:/var/lib/mysql
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "10"
+
+  es1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    volumes:
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data:rw
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "10"
+    ports:
+      - 9300:9300
+      - 9200:9200
