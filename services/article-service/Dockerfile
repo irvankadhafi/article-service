@@ -1,6 +1,6 @@
 FROM node:14.17-alpine
 
-WORKDIR /article-service
+WORKDIR /usr/src/article-service
 COPY package*.json ./
 RUN npm install
 RUN npm install -g pm2

@@ -1,6 +1,6 @@
 FROM node:14.17-alpine
 
-WORKDIR /article-search-service
+WORKDIR /usr/src/article-search-service
 COPY package*.json ./
 RUN npm install
 RUN npm install -g pm2
