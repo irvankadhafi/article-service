@@ -1,13 +1,11 @@
-const axios = require('axios');
 const { db, elastic } = require('../config');
-// Fetch all articles
+
 const modelName = 'articles';
 module.exports = {
   add: (article) => db(modelName).insert(article, 'id').then(async (id) => {
     const data = await db(modelName).where('id', id).first();
     await elastic.index({
       index: modelName,
-      // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
       body: data,
     });
     return data;

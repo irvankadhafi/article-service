@@ -120,8 +120,15 @@ module.exports = {
           hitsTotal: results.hits.total,
           data: (results.hits.hits).map((item) => item._source),
         };
-        await Article.setCache(idArtikel, JSON.stringify(data));
-        res.json(data).status(200);
+        if (data.data.length === 0) {
+          res.json({
+            type: 'error',
+            message: 'Data tidak ditemukan',
+          }).status(404);
+        } else {
+          await Article.setCache(idArtikel, JSON.stringify(data));
+          res.json(data).status(200);
+        }
       } else {
         res.json(JSON.parse(cache)).status(200);
       }
