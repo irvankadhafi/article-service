@@ -1,9 +1,17 @@
+const axios = require('axios');
 const { db, elastic } = require('../config');
-
 // Fetch all articles
 const modelName = 'articles';
 module.exports = {
-  add: (article) => db(modelName).insert(article, 'id').then((res) => db(modelName).where('id', res).first()),
+  add: (article) => db(modelName).insert(article, 'id').then(async (id) => {
+    const data = await db(modelName).where('id', id).first();
+    await elastic.index({
+      index: modelName,
+      // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
+      body: data,
+    });
+    return data;
+  }),
   bulkSync: async (result) => {
     try {
       await elastic.indices.create({
@@ -35,7 +43,6 @@ module.exports = {
           newData,
         ];
       });
-
       const { body: bulkResponse } = await elastic.bulk({ refresh: true, body });
 
       if (bulkResponse.errors) {

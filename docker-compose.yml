@@ -84,16 +84,3 @@ services:
   redis:
     image: "redis:alpine"
     command: [ "redis-server", "--bind", "redis", "--port", "6379" ]
-
-#  expressgateway:
-#    image: express-gateway:1.16.11
-#    volumes:
-#      - ./volumes/expressgateway/config:/var/lib/eg
-#    depends_on:
-#      - articlesearchservice
-#      - articleservice
-#    links:
-#      - articlesearchservice
-#      - articleservice
-#    ports:
-#      - 8080:8080
