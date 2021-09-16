@@ -13,28 +13,16 @@ module.exports = {
           },
           query: {
             bool: {
-              should: [
+              must: [
                 {
-                  bool: {
-                    should: [
-                      {
-                        match: {
-                          title: query,
-                        },
-                      },
-                      {
-                        match: {
-                          body: query,
-                        },
-                      },
-                    ],
-                    must: [
-                      {
-                        match_phrase: {
-                          author,
-                        },
-                      },
-                    ],
+                  multi_match: {
+                    query: req.query.query,
+                    fields: ['title', 'body'],
+                  },
+                },
+                {
+                  match_phrase: {
+                    author,
                   },
                 },
               ],
@@ -47,8 +35,7 @@ module.exports = {
           hitsTotal: results.hits.total,
           data: (results.hits.hits).map((item) => item._source),
         }).status(200);
-      }
-      if (query) {
+      } else if (query) {
         const body = {
           size: 100,
           from: 0,
@@ -78,8 +65,7 @@ module.exports = {
           hitsTotal: results.hits.total,
           data: (results.hits.hits).map((item) => item._source),
         }).status(200);
-      }
-      if (author) {
+      } else if (author) {
         const body = {
           size: 100,
           from: 0,
