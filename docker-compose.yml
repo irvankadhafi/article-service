@@ -29,6 +29,7 @@ services:
       - '3002:3002'
     depends_on:
       - es1
+      - articleservice
     links:
       - es1
       - articleservice
