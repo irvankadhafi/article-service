@@ -3,13 +3,17 @@ const Article = require('./article.model');
 
 module.exports = {
   index: async (req, res) => {
+    const { query, author } = req.query;
+    if (query) {
+      res.json(query);
+    }
     try {
-      const body = {
+      const EsBody = {
         sort: {
           created: { order: 'desc' },
         },
       };
-      const results = await Article.search(body).then((item) => item.body.hits.hits);
+      const results = await Article.search(EsBody).then((item) => item.body.hits.hits);
       const newData = results.map((item) => ({
         id: item._source.id,
         author: item._source.author,

@@ -1,15 +1,16 @@
 const express = require('express');
-const axios = require('axios');
+const article = require('./article.routes');
 
-const articleUrl = 'http://articleservice:3001/article/';
 const router = express.Router();
-router.get('/', async (req, res) => {
-  const data = await axios.get(articleUrl).then((data) => data.data).catch((error) => ({
-    pesan: 'error',
-    error,
-  }));
-  // console.log(data);
-  res.json(data);
+
+router.get('/', (req, res) => {
+  res.json({
+    name: 'Hello World! My name Irvan Kadhafi',
+    message: 'This is Article Search Service',
+    endpoint: '[GET] /article => to get all article',
+    requestParam: '{query(body, title), author}',
+  });
 });
+router.use('/article', article);
 
 module.exports = router;
