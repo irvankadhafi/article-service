@@ -1,0 +1,18 @@
+{
+  "name": "integration-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "article.test.js",
+  "scripts": {
+    "test": "mocha article.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chai-things": "^0.2.0",
+    "mocha": "^9.1.1",
+    "supertest": "^6.1.6"
+  }
+}
