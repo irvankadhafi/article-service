@@ -9,9 +9,11 @@ services:
       - '3001:3001'
     depends_on:
       - db
+      - es1
     env_file: ./.env
     environment:
       - SERVER_PORT=3001
+      - ELASTIC_URL=http://es1:9200
       - DB_HOST=db
       - DB_USER=$MYSQLDB_USER
       - DB_PASSWORD=$MYSQLDB_PASSWORD
@@ -58,14 +60,19 @@ services:
     volumes:
       - ./volumes/elasticsearch:/usr/share/elasticsearch/data:rw
     environment:
+      - node.name=elasticsearch01
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - discovery.type=single-node
     logging:
       driver: "json-file"
       options:
         max-size: "10k"
         max-file: "10"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - 9300:9300
       - 9200:9200
