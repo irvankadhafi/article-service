@@ -3,9 +3,7 @@ const { db, elastic } = require('../config');
 // Fetch all articles
 const modelName = 'articles';
 module.exports = {
-  find: () => db(modelName).orderBy('created', 'desc'),
   add: (article) => db(modelName).insert(article, 'id').then((res) => db(modelName).where('id', res).first()),
-  search: (body) => elastic.search({ index: modelName, body }),
   bulkSync: async (result) => {
     try {
       await elastic.indices.create({

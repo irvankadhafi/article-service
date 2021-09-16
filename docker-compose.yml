@@ -1,5 +1,6 @@
 version: "3.8"
 services:
+#  docker-compose exec articleservice /bin/sh
   articleservice:
     restart: "always"
     build: ./services/article-service
@@ -30,9 +31,11 @@ services:
     depends_on:
       - es1
       - articleservice
+      - redis
     links:
       - es1
       - articleservice
+      - redis
     environment:
       - SERVER_PORT=3002
       - ELASTIC_URL=http://es1:9200
@@ -77,3 +80,20 @@ services:
     ports:
       - 9300:9300
       - 9200:9200
+
+  redis:
+    image: "redis:alpine"
+    command: [ "redis-server", "--bind", "redis", "--port", "6379" ]
+
+#  expressgateway:
+#    image: express-gateway:1.16.11
+#    volumes:
+#      - ./volumes/expressgateway/config:/var/lib/eg
+#    depends_on:
+#      - articlesearchservice
+#      - articleservice
+#    links:
+#      - articlesearchservice
+#      - articleservice
+#    ports:
+#      - 8080:8080

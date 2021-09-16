@@ -2,30 +2,6 @@ const { validationResult } = require('express-validator');
 const Article = require('./article.model');
 
 module.exports = {
-  index: async (req, res) => {
-    const { query, author } = req.query;
-    if (query) {
-      res.json(query);
-    }
-    try {
-      const EsBody = {
-        sort: {
-          created: { order: 'desc' },
-        },
-      };
-      const results = await Article.search(EsBody).then((item) => item.body.hits.hits);
-      const newData = results.map((item) => ({
-        id: item._source.id,
-        author: item._source.author,
-        title: item._source.title,
-        body: item._source.body,
-        created: item._source.created,
-      }));
-      res.json(newData).status(200);
-    } catch (err) {
-      res.json(err).status(422);
-    }
-  },
   store: async (req, res) => {
     const { author, title, body } = req.body;
     try {

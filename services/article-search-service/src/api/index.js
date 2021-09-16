@@ -7,10 +7,10 @@ router.get('/', (req, res) => {
   res.json({
     name: 'Hello World! My name Irvan Kadhafi',
     message: 'This is Article Search Service',
-    endpoint: '[GET] /article => to get all article',
-    requestParam: '{query(body, title), author}',
+    endpoint: '[GET] /articles => to get all article',
+    requestParam: '{query(body, title) or author}',
   });
 });
-router.use('/article', article);
+router.use('/articles', article);
 
 module.exports = router;
